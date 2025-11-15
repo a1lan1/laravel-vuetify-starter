@@ -3,6 +3,8 @@
 use Opcodes\LogViewer\Enums\SortingMethod;
 use Opcodes\LogViewer\Enums\SortingOrder;
 use Opcodes\LogViewer\Enums\Theme;
+use Opcodes\LogViewer\Http\Middleware\AuthorizeLogViewer;
+use Opcodes\LogViewer\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 return [
 
@@ -62,7 +64,7 @@ return [
     |
     */
 
-    'back_to_system_url' => config('app.url', null),
+    'back_to_system_url' => config('app.url'),
 
     'back_to_system_label' => null, // Displayed by default: "Back to {{ app.name }}"
 
@@ -97,7 +99,7 @@ return [
 
     'middleware' => [
         'web',
-        \Opcodes\LogViewer\Http\Middleware\AuthorizeLogViewer::class,
+        AuthorizeLogViewer::class,
     ],
 
     /*
@@ -110,8 +112,8 @@ return [
     */
 
     'api_middleware' => [
-        \Opcodes\LogViewer\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        \Opcodes\LogViewer\Http\Middleware\AuthorizeLogViewer::class,
+        EnsureFrontendRequestsAreStateful::class,
+        AuthorizeLogViewer::class,
     ],
 
     'api_stateful_domains' => env('LOG_VIEWER_API_STATEFUL_DOMAINS') ? explode(',', env('LOG_VIEWER_API_STATEFUL_DOMAINS')) : null,
@@ -229,7 +231,7 @@ return [
     |
     */
 
-    'cache_driver' => env('LOG_VIEWER_CACHE_DRIVER', null),
+    'cache_driver' => env('LOG_VIEWER_CACHE_DRIVER'),
 
     /*
     |--------------------------------------------------------------------------
