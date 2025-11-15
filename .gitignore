@@ -36,3 +36,5 @@ opencode.json
 /.cursor
 /.junie
 /.github/copilot-instructions.md
+rr
+.rr.yaml
