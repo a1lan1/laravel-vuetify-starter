@@ -17,6 +17,7 @@
         "laravel/telescope": "*",
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.9",
+        "opcodesio/log-viewer": "*",
         "predis/predis": "^3.2"
     },
     "require-dev": {
