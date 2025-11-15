@@ -19,6 +19,7 @@
         "laravel/wayfinder": "^0.1.9",
         "opcodesio/log-viewer": "*",
         "predis/predis": "^3.2",
+        "pusher/pusher-php-server": "*",
         "spatie/laravel-data": "^4.18",
         "spatie/laravel-medialibrary": "^11.17"
     },
