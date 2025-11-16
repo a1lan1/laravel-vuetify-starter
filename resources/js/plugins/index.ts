@@ -1,6 +1,7 @@
 import axios from './axios'
 import pinia from './pinia'
 import vuetify from './vuetify'
+import './echo'
 import type { App } from 'vue'
 
 export function registerPlugins(app: App) {

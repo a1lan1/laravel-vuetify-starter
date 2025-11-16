@@ -4,13 +4,8 @@ import { createInertiaApp } from '@inertiajs/vue3'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { createApp, h } from 'vue'
 import { initializeTheme } from './composables/useAppearance'
-import { configureEcho } from '@laravel/echo-vue'
 import { registerPlugins } from '@/plugins'
 import type { DefineComponent } from 'vue'
-
-configureEcho({
-  broadcaster: 'pusher'
-})
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel'
 
