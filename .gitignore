@@ -38,3 +38,4 @@ opencode.json
 /.github/copilot-instructions.md
 rr
 .rr.yaml
+/storage/app/backups
