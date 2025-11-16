@@ -11,12 +11,8 @@ services:
       APP_DEBUG: ${APP_DEBUG:-false}
       KAFKA_BROKERS: kafka:9092
       PUSHER_HOST: soketi
-      SUPERVISOR_PHP_COMMAND: >
-        php -d variables_order=EGPCS artisan octane:start --watch
-        --server=roadrunner
-        --host=0.0.0.0
-        --rpc-port=6001
-        --port=80
+#      SUPERVISOR_PHP_COMMAND: >
+#        php -d variables_order=EGPCS artisan octane:start --watch --server=roadrunner --host=0.0.0.0 --rpc-port=6001 --port=8585
     image: php:8.3-fpm-alpine
     ports:
       - '${APP_PORT:-8585}:8585'
@@ -169,6 +165,36 @@ services:
       - redis
       - pgsql
 
+  prometheus:
+    image: prom/prometheus:v2.47.2
+    ports:
+      - '9090:9090'
+    volumes:
+      - './prometheus:/etc/prometheus'
+      - 'laravel-prometheus:/prometheus'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - laravel
+    depends_on:
+      - app
+
+  grafana:
+    image: grafana/grafana:10.1.5
+    ports:
+      - '3000:3000'
+    volumes:
+      - 'laravel-grafana:/var/lib/grafana'
+      - './grafana/provisioning:/etc/grafana/provisioning'
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_ADMIN_PASSWORD:-password}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - laravel
+    depends_on:
+      - prometheus
+
 networks:
   laravel:
     driver: bridge
@@ -181,4 +207,8 @@ volumes:
   laravel-meilisearch:
     driver: local
   laravel-kafka:
+    driver: local
+  laravel-prometheus:
+    driver: local
+  laravel-grafana:
     driver: local

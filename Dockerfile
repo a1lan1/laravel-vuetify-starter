@@ -11,6 +11,9 @@ RUN apk add --no-cache \
     libzip-dev \
     postgresql-dev \
     libpq \
+    python3 \
+    make \
+    g++ \
     oniguruma-dev \
     libxml2-dev \
     supervisor \
@@ -60,9 +63,6 @@ WORKDIR /app
 FROM node:22-alpine AS node_builder
 
 WORKDIR /app
-
-COPY package.json yarn.lock ./
-RUN apk add --no-cache python3 make g++ && yarn install --frozen-lockfile
 
 # --- STAGE 3: Development Image ---
 FROM base AS local
