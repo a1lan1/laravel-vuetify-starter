@@ -42,7 +42,7 @@ services:
       POSTGRES_USER: '${DB_USERNAME}'
       POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
     volumes:
-      - 'laravel-pgsql:/var/lib/postgresql/data'
+      - 'pgsql-data:/var/lib/postgresql/data'
     networks:
       - laravel
     healthcheck:
@@ -55,7 +55,7 @@ services:
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
     volumes:
-      - 'laravel-redis:/data'
+      - 'redis-data:/data'
     networks:
       - laravel
     healthcheck:
@@ -92,7 +92,7 @@ services:
     ports:
       - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
     volumes:
-      - 'laravel-meilisearch:/meili_data'
+      - 'meilisearch-data:/meili_data'
     networks:
       - laravel
     healthcheck:
@@ -121,7 +121,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     volumes:
-      - 'laravel-kafka:/var/lib/kafka/data'
+      - 'kafka-data:/var/lib/kafka/data'
     networks:
       - laravel
     healthcheck:
@@ -171,7 +171,7 @@ services:
       - '9090:9090'
     volumes:
       - './prometheus:/etc/prometheus'
-      - 'laravel-prometheus:/prometheus'
+      - 'prometheus-data:/prometheus'
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     networks:
@@ -184,31 +184,58 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - 'laravel-grafana:/var/lib/grafana'
+      - 'grafana-data:/var/lib/grafana'
       - './grafana/provisioning:/etc/grafana/provisioning'
     environment:
       - GF_SECURITY_ADMIN_USER=${GF_ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GF_ADMIN_PASSWORD:-password}
+      - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
+      - GF_DATASOURCE_HTTP_CLIENT_ALLOW_HOST_REGEX=clickhouse
       - GF_USERS_ALLOW_SIGN_UP=false
     networks:
       - laravel
     depends_on:
       - prometheus
+      - clickhouse
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    restart: unless-stopped
+    ports:
+      - "8123:8123" # HTTP interface
+      - "9001:9000" # Native protocol
+    volumes:
+      - ./clickhouse/initdb:/docker-entrypoint-initdb.d
+      - clickhouse-data:/var/lib/clickhouse
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: "password"
+    networks:
+      - laravel
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8123/ping | grep -q 'Ok'"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
 networks:
   laravel:
     driver: bridge
 
 volumes:
-  laravel-pgsql:
+  pgsql-data:
     driver: local
-  laravel-redis:
+  redis-data:
     driver: local
-  laravel-meilisearch:
+  meilisearch-data:
     driver: local
-  laravel-kafka:
+  kafka-data:
     driver: local
-  laravel-prometheus:
+  prometheus-data:
     driver: local
-  laravel-grafana:
+  grafana-data:
+    driver: local
+  clickhouse-data:
     driver: local
