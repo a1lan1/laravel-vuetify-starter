@@ -177,10 +177,12 @@ watch(
                   v-else
                   class="relative z-10 overflow-hidden border p-5"
                 >
+                  <!-- eslint-disable vue/no-v-html -->
                   <div
                     class="flex aspect-square size-full items-center justify-center"
                     v-html="qrCodeSvg"
                   />
+                  <!--eslint-enable-->
                 </div>
               </div>
             </div>
@@ -194,21 +196,13 @@ watch(
               </Button>
             </div>
 
-            <div
-              class="relative flex w-full items-center justify-center"
-            >
-              <div
-                class="absolute inset-0 top-1/2 h-px w-full bg-border"
-              />
+            <div class="relative flex w-full items-center justify-center">
+              <div class="absolute inset-0 top-1/2 h-px w-full bg-border" />
               <span class="relative bg-card px-2 py-1">or, enter the code manually</span>
             </div>
 
-            <div
-              class="flex w-full items-center justify-center space-x-2"
-            >
-              <div
-                class="flex w-full items-stretch overflow-hidden rounded-xl border border-border"
-              >
+            <div class="flex w-full items-center justify-center space-x-2">
+              <div class="flex w-full items-stretch overflow-hidden rounded-xl border border-border">
                 <div
                   v-if="!manualSetupKey"
                   class="flex h-full w-full items-center justify-center bg-muted p-3"
@@ -243,7 +237,7 @@ watch(
 
         <template v-else>
           <Form
-            v-slot="{ errors, processing }"
+            v-slot="{ errors: e, processing }"
             v-bind="confirm.form()"
             reset-on-error
             @finish="code = []"
@@ -278,12 +272,7 @@ watch(
                     />
                   </PinInputGroup>
                 </PinInput>
-                <InputError
-                  :message="
-                    errors?.confirmTwoFactorAuthentication
-                      ?.code
-                  "
-                />
+                <InputError :message="e?.confirmTwoFactorAuthentication?.code" />
               </div>
 
               <div class="flex w-full items-center space-x-5">

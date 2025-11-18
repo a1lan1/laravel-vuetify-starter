@@ -59,12 +59,7 @@ RUN apk add --no-cache librdkafka librdkafka-dev \
 
 WORKDIR /app
 
-# --- STAGE 2: Node.js Asset Builder ---
-FROM node:22-alpine AS node_builder
-
-WORKDIR /app
-
-# --- STAGE 3: Development Image ---
+# --- STAGE 2: Development Image ---
 FROM base AS local
 
 # Install Xdebug for debugging in development
