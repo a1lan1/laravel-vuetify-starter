@@ -212,10 +212,85 @@
           "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
           "rawSql": "SELECT toStartOfMinute(ts) AS minute, count() AS cnt FROM events WHERE event_type = 'click' AND $__timeFilter(ts) GROUP BY minute ORDER BY minute",
           "refId": "CL"
+        },
+        {
+          "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
+          "rawSql": "SELECT toStartOfMinute(ts) AS minute, count() AS cnt FROM events WHERE event_type = 'sign_in' AND $__timeFilter(ts) GROUP BY minute ORDER BY minute",
+          "refId": "SI"
+        },
+        {
+          "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
+          "rawSql": "SELECT toStartOfMinute(ts) AS minute, count() AS cnt FROM events WHERE event_type = 'sign_up' AND $__timeFilter(ts) GROUP BY minute ORDER BY minute",
+          "refId": "SU"
+        },
+        {
+          "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
+          "rawSql": "SELECT toStartOfMinute(ts) AS minute, count() AS cnt FROM events WHERE event_type = 'error' AND $__timeFilter(ts) GROUP BY minute ORDER BY minute",
+          "refId": "ER"
         }
       ],
       "title": "Events per Minute by Type",
       "type": "timeseries"
+    }
+    ,
+    {
+      "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
+      "gridPos": { "h": 4, "w": 12, "x": 0, "y": 18 },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {"calcs": ["last"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
+          "rawSql": "SELECT count() AS signins_24h FROM events WHERE event_type = 'sign_in' AND ts >= now() - INTERVAL 24 HOUR",
+          "refId": "A"
+        }
+      ],
+      "title": "Sign-ins (24h)",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
+      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 18 },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {"calcs": ["last"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
+          "rawSql": "SELECT count() AS signups_24h FROM events WHERE event_type = 'sign_up' AND ts >= now() - INTERVAL 24 HOUR",
+          "refId": "A"
+        }
+      ],
+      "title": "Sign-ups (24h)",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 22 },
+      "id": 8,
+      "options": {"showHeader": true},
+      "targets": [
+        {
+          "datasource": {"type": "grafana-clickhouse-datasource", "uid": "clickhouse_ds"},
+          "rawSql": "SELECT ts, page, event_type FROM events WHERE event_type = 'error' AND $__timeFilter(ts) ORDER BY ts DESC LIMIT 20",
+          "refId": "A"
+        }
+      ],
+      "title": "Latest Errors (1h)",
+      "type": "table"
     }
   ],
   "schemaVersion": 38,
