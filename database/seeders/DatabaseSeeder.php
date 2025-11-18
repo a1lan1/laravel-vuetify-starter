@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         if (! app()->environment('production')) {
             $this->call([
                 UserSeeder::class,
+                UserActivitySeeder::class,
             ]);
         }
     }
