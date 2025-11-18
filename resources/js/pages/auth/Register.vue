@@ -9,6 +9,7 @@ import AuthBase from '@/layouts/AuthLayout.vue'
 import { login } from '@/routes'
 import { store } from '@/routes/register'
 import { Form, Head } from '@inertiajs/vue3'
+import { trackSignUp } from '@/composables/useActivity'
 </script>
 
 <template>
@@ -23,6 +24,7 @@ import { Form, Head } from '@inertiajs/vue3'
       v-bind="store.form()"
       :reset-on-success="['password', 'password_confirmation']"
       class="flex flex-col gap-6"
+      @success="trackSignUp({ method: 'password' })"
     >
       <div class="grid gap-6">
         <div class="grid gap-2">
@@ -87,6 +89,7 @@ import { Form, Head } from '@inertiajs/vue3'
           class="mt-2 w-full"
           tabindex="5"
           :disabled="processing"
+          data-track="click"
           data-test="register-user-button"
         >
           <Spinner v-if="processing" />

@@ -11,6 +11,7 @@ import { register } from '@/routes'
 import { store } from '@/routes/login'
 import { request } from '@/routes/password'
 import { Form, Head } from '@inertiajs/vue3'
+import { trackSignIn } from '@/composables/useActivity'
 
 defineProps<{
     status?: string;
@@ -38,6 +39,7 @@ defineProps<{
       v-bind="store.form()"
       :reset-on-success="['password']"
       class="flex flex-col gap-6"
+      @success="trackSignIn({ method: 'password' })"
     >
       <div class="grid gap-6">
         <div class="grid gap-2">
@@ -98,6 +100,7 @@ defineProps<{
           class="mt-4 w-full"
           :tabindex="4"
           :disabled="processing"
+          data-track="click"
           data-test="login-button"
         >
           <Spinner v-if="processing" />

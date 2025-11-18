@@ -6,6 +6,7 @@ import { createApp, h } from 'vue'
 import { initializeTheme } from './composables/useAppearance'
 import { registerPlugins } from '@/plugins'
 import type { DefineComponent } from 'vue'
+import { initActivityAutoTrack } from './composables/useActivity'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel'
 
@@ -20,6 +21,9 @@ createInertiaApp({
     const app = createApp({ render: () => h(App, props) }).use(plugin)
 
     registerPlugins(app)
+
+    // Init analytics auto-tracking (page_view)
+    initActivityAutoTrack()
 
     app.mount(el)
   },
