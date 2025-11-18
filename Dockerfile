@@ -46,6 +46,12 @@ RUN apk add --no-cache imagemagick imagemagick-dev \
     && pecl install imagick \
     && docker-php-ext-enable imagick
 
+# Install Intl extension
+RUN apk add --no-cache icu-dev \
+    && docker-php-ext-install intl \
+    && apk del icu-dev \
+    && apk add --no-cache icu-libs
+
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

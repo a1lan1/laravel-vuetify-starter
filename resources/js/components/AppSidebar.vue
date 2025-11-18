@@ -12,6 +12,7 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar'
 import { dashboard, telescope } from '@/routes'
+import { dashboard as filament } from '@/routes/filament/admin/pages'
 import { index as horizon } from '@/routes/horizon'
 import { index as logViewer } from '@/routes/log-viewer'
 import { defaultMethod as prometheus } from '@/routes/prometheus'
@@ -24,6 +25,11 @@ const mainNavItems: NavItem[] = [
   {
     title: 'Dashboard',
     href: dashboard(),
+    icon: LayoutGrid
+  },
+  {
+    title: 'Filament',
+    href: filament(),
     icon: LayoutGrid
   },
   {
