@@ -53,7 +53,7 @@ class UserActivitySeeder extends Seeder
         $minutesAgo = random_int(0, 360); // within the last 6 hours
         $ts = $now->copy()->subMinutes($minutesAgo)->format('Y-m-d H:i:s');
         $url = Arr::random($pages);
-        $userId = random_int(0, 1) ? random_int(1, 50) : null;
+        $userId = (bool) random_int(0, 1) ? random_int(1, 50) : null;
 
         $dto = new UserActivityData(
             user_id: $userId,
@@ -65,8 +65,8 @@ class UserActivitySeeder extends Seeder
 
         try {
             app(UserActivityProducer::class)->publish($dto);
-        } catch (Exception $e) {
-            $this->command->warn('UserActivitySeeder: failed to publish event - '.$e->getMessage());
+        } catch (Exception $exception) {
+            $this->command->warn('UserActivitySeeder: failed to publish event - '.$exception->getMessage());
         }
     }
 
