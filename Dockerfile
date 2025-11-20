@@ -1,10 +1,6 @@
 # --- STAGE 1: PHP Base ---
 FROM php:8.3-fpm-alpine AS base
 
-# Passing an environment variable to a Dockerfile
-ARG APP_ENV=local
-ENV APP_ENV=${APP_ENV}
-
 # Install system utilities and dependencies for PHP extensions
 RUN apk add --no-cache \
     $PHPIZE_DEPS \
@@ -69,7 +65,7 @@ WORKDIR /app
 FROM base AS local
 
 # Install Xdebug for debugging in development
-RUN if [ "$APP_ENV" = "local" ] && ! php -m | grep -q 'xdebug'; then pecl install xdebug && docker-php-ext-enable xdebug; fi
+RUN if ! php -m | grep -q 'xdebug'; then pecl install xdebug && docker-php-ext-enable xdebug; fi
 
 # Expose the port for local development
 EXPOSE 8585

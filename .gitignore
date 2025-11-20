@@ -42,3 +42,5 @@ opencode.json
 rr
 .rr.yaml
 /storage/app/backups
+/coverage
+coverage.xml

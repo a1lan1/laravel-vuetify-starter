@@ -3,11 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: ${APP_ENV:-production}
-      args:
-        APP_ENV: ${APP_ENV:-production}
     environment:
-      APP_ENV: ${APP_ENV:-production}
+      APP_ENV: ${APP_ENV}
       APP_DEBUG: ${APP_DEBUG:-false}
       KAFKA_BROKERS: kafka:9092
       PUSHER_HOST: soketi
@@ -43,6 +40,7 @@ services:
       POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
     volumes:
       - 'pgsql-data:/var/lib/postgresql/data'
+      - './docker/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
     networks:
       - laravel
     healthcheck:
@@ -153,7 +151,7 @@ services:
     container_name: horizon
     restart: unless-stopped
     environment:
-      APP_ENV: ${APP_ENV:-production}
+      APP_ENV: ${APP_ENV}
       APP_DEBUG: ${APP_DEBUG:-false}
     command: >
       php artisan horizon
