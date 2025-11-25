@@ -37,7 +37,7 @@ class ClearStorage extends Command
         $this->info('Storage directories cleared successfully.');
     }
 
-    protected function clearDirectory($directory): void
+    protected function clearDirectory(string $directory): void
     {
         if (File::exists($directory)) {
             $files = File::allFiles($directory);
@@ -45,7 +45,7 @@ class ClearStorage extends Command
 
             foreach ($files as $file) {
                 if ($file->getFilename() !== '.gitignore') {
-                    File::delete($file);
+                    File::delete($file->getPathname());
                 }
             }
 
