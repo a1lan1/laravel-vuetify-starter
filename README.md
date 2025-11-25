@@ -38,6 +38,23 @@ or
   yarn dev
 ```
 
+### CI/CD
+
+This project includes a pre-configured CI/CD pipeline using GitHub Actions.
+
+- **Continuous Integration (CI)**: On every `push` or `pull_request` to `main` and `develop`, a workflow runs linting (`make lint`) and tests (`make test`) inside a Docker environment. This ensures code quality and that all tests pass before merging. See `.github/workflows/ci.yml`.
+
+- **Continuous Deployment (CD)**: A template for deploying to production is available at `.github/workflows/deploy.yml`. It is disabled by default.
+
+  **To activate deployment:**
+  1.  Go to your repository's **Settings > Secrets and variables > Actions**.
+  2.  Add the following repository secrets:
+      - `SSH_HOST`: Your server's IP address or domain.
+      - `SSH_USER`: The username for SSH login.
+      - `SSH_PRIVATE_KEY`: The private SSH key for authentication.
+  3.  In `.github/workflows/deploy.yml`, uncomment the "Real Deployment" step and remove the "Demonstration" steps.
+  4.  Update the `cd /path/to/your/project` line with the actual project path on your server.
+
 ### Code Quality & Linting
 
 ```bash
