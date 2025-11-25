@@ -69,6 +69,7 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan storage:link",
+            "@php artisan migrate",
             "yarn install",
             "yarn build"
         ],
@@ -117,6 +118,7 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
+        "process-timeout": 1200,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
