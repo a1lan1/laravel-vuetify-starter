@@ -8,26 +8,30 @@ services:
       APP_DEBUG: ${APP_DEBUG:-false}
       KAFKA_BROKERS: kafka:9092
       PUSHER_HOST: soketi
-#      SUPERVISOR_PHP_COMMAND: >
-#        php -d variables_order=EGPCS artisan octane:start --watch --server=roadrunner --host=0.0.0.0 --rpc-port=6001 --port=8585
+    # SUPERVISOR_PHP_COMMAND: >
+    #   php -d variables_order=EGPCS artisan octane:start --watch --server=roadrunner --host=0.0.0.0 --rpc-port=6001 --port=8585
     image: php:8.3-fpm-alpine
     ports:
       - '${APP_PORT:-8585}:8585'
       - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+    command: php artisan serve --host=0.0.0.0 --port=8585
+    # command: php artisan octane:start --server=roadrunner --host=0.0.0.0 --port=8585
     container_name: laravel_app
     restart: unless-stopped
     volumes:
-      - .:/app
+      - .:/var/www/html
       - './docker/php/php.ini:/usr/local/etc/php/conf.d/local.ini'
     networks:
       - laravel
+    healthcheck:
+      test: ["CMD", "php", "artisan", "about", "--only=environment"]
+      interval: 10s
+      timeout: 10s
+      retries: 15
+      start_period: 300s
     depends_on:
-      - pgsql
-      - redis
-      - kafka
-      - soketi
-      - mailpit
-      - meilisearch
+      pgsql:
+        condition: service_healthy
 
   pgsql:
     image: 'postgres:16-alpine'
@@ -70,12 +74,12 @@ services:
     command: >
       php artisan schedule:work
     volumes:
-      - .:/app
+      - .:/var/www/html
     networks:
       - laravel
     depends_on:
-      - redis
-      - pgsql
+      app:
+        condition: service_healthy
 
   mailpit:
     image: 'axllent/mailpit:latest'
@@ -94,7 +98,7 @@ services:
     networks:
       - laravel
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health"]
+      test: ["CMD", "wget", "--no-verbose", "--spider", "http://localhost:7700/health"]
       retries: 3
       timeout: 5s
 
@@ -123,7 +127,7 @@ services:
     networks:
       - laravel
     healthcheck:
-      test: ["CMD-SHELL", "kafka-broker-api-versions.sh --bootstrap-server kafka:9092 || exit 1"]
+      test: [ "CMD-SHELL", "kafka-broker-api-versions.sh --bootstrap-server kafka:9092 || exit 1" ]
       interval: 15s
       timeout: 10s
       retries: 10
@@ -156,12 +160,12 @@ services:
     command: >
       php artisan horizon
     volumes:
-      - .:/app
+      - .:/var/www/html
     networks:
       - laravel
     depends_on:
-      - redis
-      - pgsql
+      app:
+        condition: service_healthy
 
   prometheus:
     image: prom/prometheus:v2.47.2
@@ -217,6 +221,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
+    depends_on:
+      - app
 
 networks:
   laravel:

@@ -6,8 +6,11 @@ RUN apk add --no-cache \
     $PHPIZE_DEPS \
     libzip-dev \
     postgresql-dev \
+    git \
     libpq \
     python3 \
+    zip \
+    unzip \
     make \
     g++ \
     oniguruma-dev \
@@ -39,8 +42,7 @@ RUN apk add --no-cache libpng-dev libjpeg-turbo-dev freetype-dev \
 
 # Install Imagick extension
 RUN apk add --no-cache imagemagick imagemagick-dev \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick
+    && if ! php -m | grep -q 'imagick'; then pecl install imagick && docker-php-ext-enable imagick; fi
 
 # Install Intl extension
 RUN apk add --no-cache icu-dev \
@@ -48,18 +50,15 @@ RUN apk add --no-cache icu-dev \
     && apk del icu-dev \
     && apk add --no-cache icu-libs
 
+# Install Kafka extension
+RUN apk add --no-cache librdkafka librdkafka-dev \
+    && if ! php -m | grep -q 'rdkafka'; then pecl install rdkafka && docker-php-ext-enable rdkafka; fi
+
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install RoadRunner for Octane
 COPY --from=spiralscout/roadrunner:2025.1 /usr/bin/rr /usr/bin/rr
-
-# Install Kafka extension
-RUN apk add --no-cache librdkafka librdkafka-dev \
-    && pecl install rdkafka \
-    && docker-php-ext-enable rdkafka
-
-WORKDIR /app
 
 # --- STAGE 2: Development Image ---
 FROM base AS local
@@ -67,9 +66,17 @@ FROM base AS local
 # Install Xdebug for debugging in development
 RUN if ! php -m | grep -q 'xdebug'; then pecl install xdebug && docker-php-ext-enable xdebug; fi
 
+# Copy entrypoint script
+COPY /docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+WORKDIR /var/www/html
+
 # Expose the port for local development
 EXPOSE 8585
 
+# Use entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
 # Command for local development
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8585"]
-#CMD ["php", "artisan", "octane:start", "--server=roadrunner", "--host=0.0.0.0", "--port=${PORT:-8585}"]
+CMD ["php-fpm"]
