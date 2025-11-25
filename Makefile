@@ -13,7 +13,7 @@ build:
 	docker compose build
 
 up:
-	docker compose up
+	docker compose up -d
 
 storage-clear:
 	@docker compose exec app php artisan storage:clear || true
