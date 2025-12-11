@@ -182,9 +182,9 @@ services:
     networks:
       - laravel
     depends_on:
-      app:
-        condition: service_healthy
       redis:
+        condition: service_healthy
+      app:
         condition: service_healthy
 
   prometheus:

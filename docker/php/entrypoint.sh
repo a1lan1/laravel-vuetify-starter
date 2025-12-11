@@ -18,7 +18,7 @@ chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
 
 # 2. Install Composer dependencies
-if [ ! -d "vendor" ]; then
+if [ ! -f "vendor/autoload.php" ]; then
   echo "Installing composer dependencies..."
   composer install --no-interaction --no-progress --prefer-dist
 fi
@@ -35,17 +35,24 @@ fi
 
 # 4. Generate app key
 if [ -z "$(grep '^APP_KEY=' .env | cut -d '=' -f2-)" ]; then
-    echo "Generating application key..."
-    php artisan key:generate
+  echo "Generating application key..."
+  php artisan key:generate
 fi
 
 # 5. Create storage link
 if [ ! -L "public/storage" ]; then
-    echo "Creating storage link..."
-    php artisan storage:link
+  echo "Creating storage link..."
+  php artisan storage:link
 fi
 
-# 6. Wait for the database to be ready
+# 6. Install rr binary
+if [ ! -f "rr" ]; then
+  echo "Installing rr binary..."
+  ./vendor/bin/rr get-binary
+  chmod +x ./rr
+fi
+
+# 7. Wait for the database to be ready
 echo "Waiting for database connection..."
 while ! nc -z pgsql 5432; do
   echo "Waiting for PostgreSQL..."

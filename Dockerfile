@@ -6,6 +6,7 @@ RUN apk add --no-cache \
     $PHPIZE_DEPS \
     libzip-dev \
     postgresql-dev \
+    postgresql-client \
     git \
     libpq \
     python3 \
@@ -18,7 +19,8 @@ RUN apk add --no-cache \
     supervisor \
     linux-headers \
     nodejs \
-    yarn
+    yarn \
+    openssl-dev
 
 # Install the PHP extensions
 RUN docker-php-ext-install -j$(nproc) \
@@ -79,4 +81,4 @@ EXPOSE 8585
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # Command for local development
-CMD ["php-fpm"]
+CMD ["php", "artisan", "octane:start", "--server=roadrunner", "--watch", "--host=0.0.0.0", "--port=8585"]
