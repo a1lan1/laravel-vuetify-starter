@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\RoleEnum;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -71,7 +74,7 @@ use Spatie\Permission\Traits\HasRoles;
  *
  * @mixin \Eloquent
  */
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements FilamentUser, HasMedia
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory;
@@ -125,6 +128,15 @@ class User extends Authenticatable implements HasMedia
         ];
     }
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return $this->isManager();
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('user.avatar-thumb')
@@ -147,6 +159,16 @@ class User extends Authenticatable implements HasMedia
         $this->addMedia($file)
             ->usingFileName($file->hashName())
             ->toMediaCollection('user.avatar');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole(RoleEnum::ADMIN);
+    }
+
+    public function isManager(): bool
+    {
+        return $this->hasRole(RoleEnum::MANAGER);
     }
 
     protected function avatar(): Attribute

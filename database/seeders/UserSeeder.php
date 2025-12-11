@@ -13,22 +13,25 @@ class UserSeeder extends Seeder
     {
         User::factory()
             ->withAvatar()
+            ->withAdminRole()
             ->withoutTwoFactor()
-            ->create([
-                'name' => 'Test User',
-                'email' => 'test@example.com',
-            ]);
+            ->create(['email' => 'admin@example.com']);
 
         User::factory()
             ->withAvatar()
+            ->withManagerRole()
             ->withoutTwoFactor()
-            ->create([
-                'name' => 'Demo User',
-                'email' => 'demo@example.com',
-            ]);
+            ->create(['email' => 'manager@example.com']);
+
+        User::factory()
+            ->withAvatar()
+            ->withBaseRoles()
+            ->withoutTwoFactor()
+            ->create(['email' => 'user@example.com']);
 
         User::factory(5)
             ->withAvatar()
+            ->withBaseRoles()
             ->withoutTwoFactor()
             ->create();
     }
