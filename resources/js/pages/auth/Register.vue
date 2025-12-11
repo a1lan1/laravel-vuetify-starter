@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import InputError from '@/components/InputError.vue'
-import TextLink from '@/components/TextLink.vue'
+import InputError from '@/components/theme/InputError.vue'
+import TextLink from '@/components/theme/TextLink.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
+import { trackSignUp } from '@/composables/useActivity'
 import AuthBase from '@/layouts/AuthLayout.vue'
 import { login } from '@/routes'
 import { store } from '@/routes/register'
 import { Form, Head } from '@inertiajs/vue3'
-import { trackSignUp } from '@/composables/useActivity'
 </script>
 
 <template>

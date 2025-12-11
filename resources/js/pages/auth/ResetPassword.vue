@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InputError from '@/components/InputError.vue'
+import InputError from '@/components/theme/InputError.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -10,8 +10,8 @@ import { Form, Head } from '@inertiajs/vue3'
 import { ref } from 'vue'
 
 const props = defineProps<{
-    token: string;
-    email: string;
+  token: string;
+  email: string;
 }>()
 
 const inputEmail = ref(props.email)
@@ -63,9 +63,7 @@ const inputEmail = ref(props.email)
         </div>
 
         <div class="grid gap-2">
-          <Label for="password_confirmation">
-            Confirm Password
-          </Label>
+          <Label for="password_confirmation"> Confirm Password </Label>
           <Input
             id="password_confirmation"
             type="password"

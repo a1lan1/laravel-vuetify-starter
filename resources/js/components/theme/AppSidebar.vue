@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import NavFooter from '@/components/NavFooter.vue'
-import NavMain from '@/components/NavMain.vue'
-import NavUser from '@/components/NavUser.vue'
+import NavFooter from '@/components/theme/NavFooter.vue'
+import NavMain from '@/components/theme/NavMain.vue'
+import NavUser from '@/components/theme/NavUser.vue'
 import {
   Sidebar,
   SidebarContent,
@@ -16,10 +16,10 @@ import { dashboard as filament } from '@/routes/filament/admin/pages'
 import { index as horizon } from '@/routes/horizon'
 import { index as logViewer } from '@/routes/log-viewer'
 import { defaultMethod as prometheus } from '@/routes/prometheus'
+import type { NavItem } from '@/types'
 import { Link } from '@inertiajs/vue3'
 import { Folder, LayoutGrid } from 'lucide-vue-next'
 import AppLogo from './AppLogo.vue'
-import type { NavItem } from '@/types'
 
 const mainNavItems: NavItem[] = [
   {

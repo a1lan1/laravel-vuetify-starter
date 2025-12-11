@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppLogoIcon from '@/components/AppLogoIcon.vue'
+import AppLogoIcon from '@/components/theme/AppLogoIcon.vue'
 import {
   Card,
   CardContent,
@@ -11,8 +11,8 @@ import { home } from '@/routes'
 import { Link } from '@inertiajs/vue3'
 
 defineProps<{
-    title?: string;
-    description?: string;
+  title?: string;
+  description?: string;
 }>()
 </script>
 
@@ -26,9 +26,7 @@ defineProps<{
         class="flex items-center gap-2 self-center font-medium"
       >
         <div class="flex h-9 w-9 items-center justify-center">
-          <AppLogoIcon
-            class="size-9 fill-current text-black dark:text-white"
-          />
+          <AppLogoIcon class="size-9 fill-current text-black dark:text-white" />
         </div>
       </Link>
 

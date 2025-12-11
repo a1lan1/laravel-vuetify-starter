@@ -4,8 +4,8 @@ import { Form } from '@inertiajs/vue3'
 import { useTemplateRef } from 'vue'
 
 // Components
-import HeadingSmall from '@/components/HeadingSmall.vue'
-import InputError from '@/components/InputError.vue'
+import HeadingSmall from '@/components/theme/HeadingSmall.vue'
+import InputError from '@/components/theme/InputError.vue'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -62,15 +62,12 @@ const passwordInput = useTemplateRef('passwordInput')
           >
             <DialogHeader class="space-y-3">
               <DialogTitle>
-                Are you sure you want to delete your
-                account?
+                Are you sure you want to delete your account?
               </DialogTitle>
               <DialogDescription>
-                Once your account is deleted, all of its
-                resources and data will also be permanently
-                deleted. Please enter your password to confirm
-                you would like to permanently delete your
-                account.
+                Once your account is deleted, all of its resources and data will
+                also be permanently deleted. Please enter your password to
+                confirm you would like to permanently delete your account.
               </DialogDescription>
             </DialogHeader>
 

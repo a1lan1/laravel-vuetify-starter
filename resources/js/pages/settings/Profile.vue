@@ -4,9 +4,9 @@ import { edit } from '@/routes/profile'
 import { send } from '@/routes/verification'
 import { Form, Head, Link, usePage } from '@inertiajs/vue3'
 
-import DeleteUser from '@/components/DeleteUser.vue'
-import HeadingSmall from '@/components/HeadingSmall.vue'
-import InputError from '@/components/InputError.vue'
+import DeleteUser from '@/components/theme/DeleteUser.vue'
+import HeadingSmall from '@/components/theme/HeadingSmall.vue'
+import InputError from '@/components/theme/InputError.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,8 +15,8 @@ import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { type BreadcrumbItem } from '@/types'
 
 interface Props {
-    mustVerifyEmail: boolean;
-    status?: string;
+  mustVerifyEmail: boolean;
+  status?: string;
 }
 
 defineProps<Props>()
@@ -99,8 +99,7 @@ const user = page.props.auth.user
               v-if="status === 'verification-link-sent'"
               class="mt-2 text-sm font-medium text-green-600"
             >
-              A new verification link has been sent to your email
-              address.
+              A new verification link has been sent to your email address.
             </div>
           </div>
 

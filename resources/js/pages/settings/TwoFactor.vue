@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import HeadingSmall from '@/components/HeadingSmall.vue'
-import TwoFactorRecoveryCodes from '@/components/TwoFactorRecoveryCodes.vue'
-import TwoFactorSetupModal from '@/components/TwoFactorSetupModal.vue'
+import HeadingSmall from '@/components/theme/HeadingSmall.vue'
+import TwoFactorRecoveryCodes from '@/components/theme/TwoFactorRecoveryCodes.vue'
+import TwoFactorSetupModal from '@/components/theme/TwoFactorSetupModal.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useTwoFactorAuth } from '@/composables/useTwoFactorAuth'
@@ -14,8 +14,8 @@ import { ShieldBan, ShieldCheck } from 'lucide-vue-next'
 import { onUnmounted, ref } from 'vue'
 
 interface Props {
-    requiresConfirmation?: boolean;
-    twoFactorEnabled?: boolean;
+  requiresConfirmation?: boolean;
+  twoFactorEnabled?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -57,10 +57,9 @@ onUnmounted(() => {
           </Badge>
 
           <p class="text-muted-foreground">
-            When you enable two-factor authentication, you will be
-            prompted for a secure pin during login. This pin can be
-            retrieved from a TOTP-supported application on your
-            phone.
+            When you enable two-factor authentication, you will be prompted for
+            a secure pin during login. This pin can be retrieved from a
+            TOTP-supported application on your phone.
           </p>
 
           <div>
@@ -95,10 +94,9 @@ onUnmounted(() => {
           </Badge>
 
           <p class="text-muted-foreground">
-            With two-factor authentication enabled, you will be
-            prompted for a secure, random pin during login, which
-            you can retrieve from the TOTP-supported application on
-            your phone.
+            With two-factor authentication enabled, you will be prompted for a
+            secure, random pin during login, which you can retrieve from the
+            TOTP-supported application on your phone.
           </p>
 
           <TwoFactorRecoveryCodes />

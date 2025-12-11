@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InputError from '@/components/InputError.vue'
+import InputError from '@/components/theme/InputError.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -13,9 +13,9 @@ import { Form, Head } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 
 interface AuthConfigContent {
-    title: string;
-    description: string;
-    toggleText: string;
+  title: string;
+  description: string;
+  toggleText: string;
 }
 
 const authConfigContent = computed<AuthConfigContent>(() => {
@@ -23,7 +23,7 @@ const authConfigContent = computed<AuthConfigContent>(() => {
     return {
       title: 'Recovery Code',
       description:
-                'Please confirm access to your account by entering one of your emergency recovery codes.',
+        'Please confirm access to your account by entering one of your emergency recovery codes.',
       toggleText: 'login using an authentication code'
     }
   }
@@ -31,7 +31,7 @@ const authConfigContent = computed<AuthConfigContent>(() => {
   return {
     title: 'Authentication Code',
     description:
-            'Enter the authentication code provided by your authenticator application.',
+      'Enter the authentication code provided by your authenticator application.',
     toggleText: 'login using a recovery code'
   }
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UserInfo from '@/components/UserInfo.vue'
+import UserInfo from '@/components/theme/UserInfo.vue'
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -13,7 +13,7 @@ import { Link, router } from '@inertiajs/vue3'
 import { LogOut, Settings } from 'lucide-vue-next'
 
 interface Props {
-    user: User;
+  user: User;
 }
 
 const handleLogout = () => {

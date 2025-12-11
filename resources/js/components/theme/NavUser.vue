@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UserInfo from '@/components/UserInfo.vue'
+import UserInfo from '@/components/theme/UserInfo.vue'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,11 +37,7 @@ const { isMobile, state } = useSidebar()
         <DropdownMenuContent
           class="w-(--reka-dropdown-menu-trigger-width) min-w-56 rounded-lg"
           :side="
-            isMobile
-              ? 'bottom'
-              : state === 'collapsed'
-                ? 'left'
-                : 'bottom'
+            isMobile ? 'bottom' : state === 'collapsed' ? 'left' : 'bottom'
           "
           align="end"
           :side-offset="4"

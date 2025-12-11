@@ -5,12 +5,12 @@ import type { User } from '@/types'
 import { computed } from 'vue'
 
 interface Props {
-    user: User;
-    showEmail?: boolean;
+  user: User;
+  showEmail?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  showEmail: false
+  showEmail: true
 })
 
 const { getInitials } = useInitials()
@@ -19,6 +19,8 @@ const { getInitials } = useInitials()
 const showAvatar = computed(
   () => props.user.avatar && props.user.avatar !== ''
 )
+
+console.log(props.user.roles)
 </script>
 
 <template>
@@ -34,12 +36,26 @@ const showAvatar = computed(
   </Avatar>
 
   <div class="grid flex-1 text-left text-sm leading-tight">
-    <span class="truncate font-medium">{{ user.name }}</span>
+    <div class="flex items-center justify-between gap-2">
+      <span class="truncate font-medium">{{ user.name }}</span>
+
+      <v-chip
+        v-for="role in user.roles"
+        :key="role.id"
+        size="x-small"
+        density="compact"
+        color="primary"
+        title="Role"
+      >
+        {{ role.name }}
+      </v-chip>
+    </div>
+
     <span
       v-if="showEmail"
       class="truncate text-xs text-muted-foreground"
-    >{{
-      user.email
-    }}</span>
+    >
+      {{ user.email }}
+    </span>
   </div>
 </template>
