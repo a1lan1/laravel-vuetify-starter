@@ -196,9 +196,7 @@ watch(
             </div>
 
             <div class="flex w-full items-center justify-center space-x-2">
-              <div
-                class="flex w-full items-stretch overflow-hidden rounded-xl border border-border"
-              >
+              <div class="flex w-full items-stretch overflow-hidden rounded-xl border border-border">
                 <div
                   v-if="!manualSetupKey"
                   class="flex h-full w-full items-center justify-center bg-muted p-3"
@@ -230,11 +228,10 @@ watch(
             </div>
           </template>
         </template>
-
         <template v-else>
           <Form
             v-slot="{ errors: e, processing }"
-            v-bind="confirm.form()"
+            v-bind="confirm()"
             reset-on-error
             @finish="code = []"
             @success="isOpen = false"
@@ -268,9 +265,7 @@ watch(
                     />
                   </PinInputGroup>
                 </PinInput>
-                <InputError
-                  :message="e?.confirmTwoFactorAuthentication?.code"
-                />
+                <InputError :message="e.code" />
               </div>
 
               <div class="flex w-full items-center space-x-5">
