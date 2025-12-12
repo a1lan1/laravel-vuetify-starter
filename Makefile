@@ -6,7 +6,7 @@ reinstall:
 	make storage-clear
 	make prune
 	make destroy
-	rm -rf vendor node_modules public/build public/storage
+	rm -rf vendor node_modules public/build public/storage storage/logs/.initialized rr
 	make install
 
 build:
@@ -72,6 +72,11 @@ optimize:
 optimize-clear:
 	docker compose exec app php artisan optimize:clear
 
+horizon-clear:
+	docker compose exec app php artisan cache:clear
+	docker compose exec app php artisan horizon:clear
+	docker compose exec app php artisan horizon:forget --all
+
 cache:
 	docker compose exec app composer dump-autoload --optimize
 	make optimize
@@ -116,7 +121,17 @@ test:
 
 lint:
 	@make ide
+	@make lint-back
+	@make lint-front
+
+lint-back:
+	@echo "Linting backend..."
 	docker compose exec app ./vendor/bin/phpstan analyse
 	docker compose exec app ./vendor/bin/rector process --ansi
 	docker compose exec app ./vendor/bin/pint --parallel
+
+lint-front:
+	@echo "Linting frontend..."
+	docker compose exec app yarn format
 	docker compose exec app yarn lint
+	docker compose exec app yarn type-check
