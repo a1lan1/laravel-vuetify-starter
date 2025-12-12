@@ -18,13 +18,15 @@ withDefaults(defineProps<Props>(), {
 <template>
   <AppShell variant="sidebar">
     <Snackbar />
-    <AppSidebar />
-    <AppContent
-      variant="sidebar"
-      class="overflow-x-hidden"
-    >
-      <AppSidebarHeader :breadcrumbs="breadcrumbs" />
-      <slot />
-    </AppContent>
+    <AppSidebar v-if="$page.props.auth.user" />
+    <div class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
+      <AppSidebarHeader
+        :breadcrumbs="breadcrumbs"
+        class="dark:border-gray-1000 sticky top-0 z-10 flex-shrink-0 backdrop-blur dark:bg-gray-900/10"
+      />
+      <AppContent variant="sidebar">
+        <slot />
+      </AppContent>
+    </div>
   </AppShell>
 </template>
