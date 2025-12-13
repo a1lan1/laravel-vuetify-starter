@@ -6,9 +6,6 @@ It comes packed with a suite of pre-configured services for rapid development, i
 
 #### The development environment is fully containerized using [Docker](https://www.docker.com/products/docker-desktop/).
 
-
-
-
 ## Getting Started
 
 1. **Install dependencies and start the application containers.**
@@ -38,12 +35,21 @@ or
   yarn dev
 ```
 
+### Monitoring Octane
+
+```bash
+# Check Octane status
+docker compose exec app php artisan octane:status
+
+# Reload workers
+docker compose exec app php artisan octane:reload
+```
+
 ### CI/CD
 
 This project includes a pre-configured CI/CD pipeline using GitHub Actions.
 
 - **Continuous Integration (CI)**: On every `push` or `pull_request` to `main` and `develop`, a workflow runs linting (`make lint`) and tests (`make test`) inside a Docker environment. This ensures code quality and that all tests pass before merging. See `.github/workflows/ci.yml`.
-
 - **Continuous Deployment (CD)**: A template for deploying to production is available at `.github/workflows/deploy.yml`. It is disabled by default.
 
   **To activate deployment:**
