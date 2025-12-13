@@ -7,6 +7,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\RoleEnum;
 use Carbon\CarbonImmutable;
+use Cknow\Money\Casts\MoneyIntegerCast;
+use Cknow\Money\Money;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -33,6 +35,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @property int $id
  * @property string $name
+ * @property Money $balance
  * @property string $email
  * @property CarbonImmutable|null $email_verified_at
  * @property string $password
@@ -58,6 +61,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder<static>|User permission($permissions, $without = false)
  * @method static Builder<static>|User query()
  * @method static Builder<static>|User role($roles, $guard = null, $without = false)
+ * @method static Builder<static>|User whereBalance($value)
  * @method static Builder<static>|User whereCreatedAt($value)
  * @method static Builder<static>|User whereEmail($value)
  * @method static Builder<static>|User whereEmailVerifiedAt($value)
@@ -125,6 +129,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'balance' => MoneyIntegerCast::class,
         ];
     }
 

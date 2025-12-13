@@ -36,6 +36,7 @@ export interface User {
   avatar?: string;
   roles: Role[];
   email_verified_at?: string | null;
+  balance: MoneyData;
   created_at?: string;
   updated_at?: string;
 }
@@ -61,6 +62,12 @@ export interface FlashMessage {
   success?: string;
   error?: string;
   message?: string;
+}
+
+export interface MoneyData {
+  amount: number;
+  currency: string;
+  formatted: string;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;

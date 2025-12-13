@@ -25,6 +25,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'avatar' => $this->whenNotNull($this->avatar),
             'email' => $this->whenNotNull($this->email),
+            'balance' => $this->whenNotNull($this->balance),
         ];
     }
 }
