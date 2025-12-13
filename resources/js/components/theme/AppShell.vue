@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { snackbar } from '@/plugins/snackbar'
-import type { AppPageProps, FlashMessage } from '@/types'
+import type { AppPageProps, BroadcastEvent, FlashMessage } from '@/types'
 import { usePage } from '@inertiajs/vue3'
-import { watch, nextTick } from 'vue'
+import { echo } from '@laravel/echo-vue'
+import { nextTick, onMounted, onUnmounted, watch } from 'vue'
 
 interface Props {
   variant?: 'header' | 'sidebar';
@@ -36,13 +37,33 @@ const handleFlashMessages = (flash: FlashMessage) => {
 
 watch(() => page.props.flash, handleFlashMessages, { deep: true })
 
-watch(() => page.props.quote, (newQuote) => {
-  if (newQuote?.message) {
-    nextTick(() => {
-      snackbar.info({ text: `${newQuote.author}: ${newQuote.message}` })
-    })
+watch(
+  () => page.props.quote,
+  (newQuote) => {
+    if (newQuote?.message) {
+      nextTick(() => {
+        snackbar.info({ text: `${newQuote.author}: ${newQuote.message}` })
+      })
+    }
+  },
+  { immediate: true, deep: true }
+)
+
+onMounted(() => {
+  if (page.props.auth.user) {
+    echo()
+      .private(`App.Models.User.${page.props.auth.user.id}`)
+      .listen('.user.notification', (e: BroadcastEvent) => {
+        snackbar.success({ text: e.message })
+      })
   }
-}, { immediate: true, deep: true })
+})
+
+onUnmounted(() => {
+  if (page.props.auth.user) {
+    echo().leave(`App.Models.User.${page.props.auth.user.id}`)
+  }
+})
 </script>
 
 <template>

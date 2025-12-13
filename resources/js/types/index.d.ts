@@ -86,3 +86,7 @@ export interface Pagination<T> {
   to: number;
   total: number;
 }
+
+export interface BroadcastEvent {
+  message: string;
+}
