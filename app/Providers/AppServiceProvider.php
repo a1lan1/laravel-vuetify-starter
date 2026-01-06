@@ -16,6 +16,15 @@ use Override;
 class AppServiceProvider extends ServiceProvider
 {
     /**
+     * All of the container bindings that should be registered.
+     *
+     * @var array<string, string>
+     */
+    public array $bindings = [
+        //
+    ];
+
+    /**
      * Register any application services.
      */
     #[Override]
@@ -37,5 +46,6 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
         Date::use(CarbonImmutable::class);
         Model::preventLazyLoading(! $this->app->isProduction());
+        Model::preventAccessingMissingAttributes(! $this->app->isProduction());
     }
 }
