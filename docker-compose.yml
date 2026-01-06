@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     environment:
       APP_ENV: ${APP_ENV}
-      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_DEBUG: ${APP_DEBUG}
       KAFKA_BROKERS: kafka:9092
       REVERB_APP_ID: ${REVERB_APP_ID}
       REVERB_APP_KEY: ${REVERB_APP_KEY}
@@ -25,7 +25,7 @@ services:
       - .:/var/www/html
       - './docker/php/php.ini:/usr/local/etc/php/conf.d/local.ini'
     networks:
-      - laravel
+      - laravel_net
     healthcheck:
       test: ["CMD", "php", "artisan", "about", "--only=environment"]
       interval: 10s
@@ -43,12 +43,13 @@ services:
   reverb:
     image: php:8.3-fpm-alpine
     command: php artisan reverb:start --host=0.0.0.0 --port=${REVERB_SERVER_PORT:-8080}
+    restart: unless-stopped
     ports:
       - "${REVERB_SERVER_PORT:-8080}:${REVERB_SERVER_PORT:-8080}"
     volumes:
       - .:/var/www/html
     networks:
-      - laravel
+      - laravel_net
     depends_on:
       app:
         condition: service_healthy
@@ -62,11 +63,12 @@ services:
       POSTGRES_DB: '${DB_DATABASE}'
       POSTGRES_USER: '${DB_USERNAME}'
       POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    restart: unless-stopped
     volumes:
       - 'pgsql-data:/var/lib/postgresql/data'
       - './docker/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
     networks:
-      - laravel
+      - laravel_net
     healthcheck:
       test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
       retries: 3
@@ -76,10 +78,11 @@ services:
     image: 'redis:alpine'
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
+    restart: unless-stopped
     volumes:
       - 'redis-data:/data'
     networks:
-      - laravel
+      - laravel_net
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       retries: 3
@@ -91,14 +94,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: scheduler
     restart: unless-stopped
     command: >
       php artisan schedule:work
     volumes:
       - .:/var/www/html
     networks:
-      - laravel
+      - laravel_net
     depends_on:
       app:
         condition: service_healthy
@@ -107,20 +109,22 @@ services:
     profiles:
       - dev-tools
     image: 'axllent/mailpit:latest'
+    restart: unless-stopped
     ports:
       - '${FORWARD_MAILPIT_PORT:-1025}:1025'
       - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
     networks:
-      - laravel
+      - laravel_net
 
   meilisearch:
     image: 'getmeili/meilisearch:latest'
     ports:
       - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+    restart: unless-stopped
     volumes:
       - 'meilisearch-data:/meili_data'
     networks:
-      - laravel
+      - laravel_net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
       interval: 5s
@@ -132,7 +136,6 @@ services:
     profiles:
       - kafka
     image: confluentinc/cp-kafka:latest
-    container_name: kafka
     restart: unless-stopped
     ports:
       - "9092:9092"
@@ -150,21 +153,22 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
     volumes:
       - 'kafka-data:/var/lib/kafka/data'
     networks:
-      - laravel
+      - laravel_net
     healthcheck:
       test: [ "CMD-SHELL", "kafka-broker-api-versions.sh --bootstrap-server kafka:9092 || exit 1" ]
-      interval: 15s
+      interval: 10s
       timeout: 10s
-      retries: 10
+      retries: 20
+      start_period: 30s
 
   horizon:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: horizon
     restart: unless-stopped
     environment:
       APP_ENV: ${APP_ENV}
@@ -180,17 +184,18 @@ services:
     volumes:
       - .:/var/www/html
     networks:
-      - laravel
+      - laravel_net
     depends_on:
-      redis:
-        condition: service_healthy
       app:
+        condition: service_healthy
+      redis:
         condition: service_healthy
 
   prometheus:
     profiles:
       - monitoring
     image: prom/prometheus:v2.47.2
+    restart: unless-stopped
     ports:
       - '9090:9090'
     volumes:
@@ -199,7 +204,7 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     networks:
-      - laravel
+      - laravel_net
     depends_on:
       app:
         condition: service_healthy
@@ -219,8 +224,9 @@ services:
       - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
       - GF_DATASOURCE_HTTP_CLIENT_ALLOW_HOST_REGEX=clickhouse
       - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
     networks:
-      - laravel
+      - laravel_net
     depends_on:
       prometheus:
         condition: service_started
@@ -231,7 +237,6 @@ services:
     profiles:
       - monitoring
     image: clickhouse/clickhouse-server:latest
-    container_name: clickhouse
     restart: unless-stopped
     ports:
       - "8123:8123" # HTTP interface
@@ -244,7 +249,7 @@ services:
       CLICKHOUSE_USER: default
       CLICKHOUSE_PASSWORD: "password"
     networks:
-      - laravel
+      - laravel_net
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8123/ping | grep -q 'Ok'"]
       interval: 5s
@@ -255,7 +260,7 @@ services:
         condition: service_healthy
 
 networks:
-  laravel:
+  laravel_net:
     driver: bridge
 
 volumes:
